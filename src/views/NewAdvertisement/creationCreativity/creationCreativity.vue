@@ -1,157 +1,188 @@
 <template>
-  <div>
-    <h3>广告创意</h3>
-    <p>落地页</p>
-    <el-row justify="center">
-      <el-col :span='15'>
-       <el-form :label-position="labelPosition" label-width="100px" :model="formLabelAlign">
-        <el-form-item label="着陆页地址">
-          <el-input v-model="formLabelAlign.name"></el-input>
-        </el-form-item>
-         </el-form>
-      </el-col>
-      <el-col style='margin-left:10px'>
-        <h4 style='margin-bottom:10px'>上传创意</h4>
-          <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="创意一" name="first"></el-tab-pane>
-            <el-tab-pane label="创意二" name="second"></el-tab-pane>
-            <el-tab-pane label="+添加创意" name="three"></el-tab-pane>
-         </el-tabs>
-        <div>
-         <el-upload
-          class="avatar-uploader"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload">
-          <img v-if="imageUrl" :src="imageUrl" class="avatar">
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-          <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt="">
-          </el-dialog>
-        </div>
-      </el-col>
-      <el-col :span='15'>
-           <el-form :label-position="labelPosition" label-width="100px" :model="formLabelAlign">
-             <el-form-item label="广告文案">
-              <el-input v-model="formLabelAlign.region"></el-input>
-            </el-form-item>
-          </el-form>
-      </el-col>
-      <el-col :span='15'>
-            <el-form :label-position="labelPosition" label-width="100px" :model="formLabelAlign">
-             <el-form-item label="监控链接">
-                 <el-input v-model="formLabelAlign.type"></el-input>
-             </el-form-item>
-        </el-form>
-      </el-col>
-      <el-col :offset="1" style="margin-top:10px">
-         <el-button type="info" size="medium">提交</el-button>
-      </el-col>
-    </el-row>
-  </div>
+    <div class="landing-page">
+        <!-- 落地页 -->
+        <el-row>
+            <el-col class="landing-page-title">
+                <h1>广告创意</h1>
+            </el-col>
+            <el-col class="landing-page-landing">
+                <h5>落地页</h5>
+            </el-col>
+            <el-col>
+                <el-form>
+                    <el-form-item label="着陆页地址：" prop="address">
+                        <el-input 
+                            v-model="address" 
+                            auto-complete="off" 
+                            placeholder="请设置广告名称"
+                        ></el-input>
+                        <el-button disabled>预定</el-button>
+                    </el-form-item>
+                </el-form>
+            </el-col>
+             <el-col class="landing-page-landing">
+                <h5 style="margin:0">上传创意</h5>
+                <a href="#" @click="show" v-if='landFile'>+添加创意</a>
+                <div v-else>
+                  <el-tabs v-model="activeName" @tab-click="handleClick">
+                    <el-tab-pane label="创意1" name="first">
+                      <el-upload
+                        action="http://localhost:9000/dsp-creative/creative/upload"
+                        list-type="picture-card"
+                        :success="handleAvatarSuccess">
+                        <i class="el-icon-plus"></i>
+                      </el-upload>
+                      <el-dialog :visible.sync="dialogVisible">
+                        <img width="100%" :src="dialogImageUrl" alt="">
+                      </el-dialog>
+                      <div class="el-upload__text">640*240像素<p>点击上传</p></div>
+                      <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg文件，且不超过500kb</div>
+                      <el-col class="choose-plan-to-promote">
+                          <span>广告文案:</span>
+                          <el-input type="text" placeholder="请设置广告名称" style="width:432px;height:32px;" class="choose-plan-input"></el-input>
+                            <span style="font-size:14px;line-height:19px;color:rgba(0,0,0,.65)">0/18<i class="el-icon-question"></i></span>
+                      </el-col>
+                      <el-col class="choose-plan-to-promote">
+                          <span>监控链接:</span>
+                          <el-input type="text" placeholder="请设置广告名称" style="width:432px;height:32px;" class="choose-plan-input"></el-input>
+                      </el-col>
+                    </el-tab-pane>
+                    <el-tab-pane label="创意2" name="second">创意2</el-tab-pane>
+                    <el-tab-pane label="添加创意" name="third">+添加创意</el-tab-pane>
+                  </el-tabs>
+                </div>
+            </el-col>
+            <el-col style="margin-top:80.7px;" class="landing-page-button">
+                 <el-button type="info" disabled>预定</el-button>
+            </el-col>
+           
+              <el-col v-if="showOrHide" class="landing-page-model" :span="10">
+                  <h5>选择创意</h5>
+                  <div>
+                      <img src="../../../../static/images/1.png" alt="" @click="ClickImage">
+                      <img src="../../../../static/images/2.png" alt="" @click="ClickImage">
+                  </div>
+              </el-col>
+
+
+        </el-row>
+    </div>
 </template>
+
 <script>
+import $http from "../../../utils/request";
 export default {
-  name: 'creationCreativity',
+  name: "landingPage",
   data() {
     return {
-      labelPosition: 'right',
-        activeName: 'second',
-       formLabelAlign: {
-          name: '',
-          region: '',
-          type: ''
-      },
-        dialogImageUrl: '',
-        dialogVisible: false,
-         imageUrl: ''
-    }
+      address: "",
+      showOrHide: false,
+      landFile: true,
+      dialogImageUrl: "",
+      dialogVisible: false,
+      activeName: "first"
+    };
   },
   methods: {
-       handleClick(tab, event) {
-        console.log(tab, event);
-      },
-        handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
-      },
-      beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
+    show() {
+      this.showOrHide = !this.showOrHide;
+    },
+    ClickImage() {
+      this.landFile = !this.landFile;
+      this.showOrHide = !this.showOrHide;
+    },
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = "http://localhost:9000/" + res.data.value;
+      console.log(this)
+      this.$message = {
+        message: '添加成功，但我不想显示',
+        type: 'success'
       }
-
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+     // const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      // if (!isLt2M) {
+      //   this.$message.error("上传头像图片大小不能超过 2MB!");
+      // }
+      return isJPG
+      // && isLt2M;
+    },
+    handleClick(tab, event) {
+      console.log(tab, event);
+    }
   }
-}
-
+};
 </script>
-<style lang='scss' scoped>
-h3 {
-  font-family: MicrosoftYaHei;
+
+<style scoped>
+.landing-page-title h1 {
   font-size: 34px;
   color: rgba(0, 0, 0, 0.85);
   letter-spacing: 0;
-  width: 206px;
-  height: 45px;
-  margin-top: 30px;
-  margin-left: 10px;
+  margin-bottom: 32px;
+  font-weight: normal;
 }
-.el-button{
+.landing-page-landing h5 {
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.85);
+  letter-spacing: 0;
+  margin-bottom: 22px;
+}
+.el-input {
+  width: 432px;
+  height: 32px;
+}
+.el-input .el-input__inner {
+  height: 100%;
+}
+.landing-page-button .el-button {
   width: 166px;
   height: 52px;
 }
-p {
-  margin-top: 20px;
-  margin-left: 10px;
-  font-size: 18px;
-  margin-bottom: 20px;
+.landing-page-mark {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
 }
-
-.bg {
+.landing-page-model {
+  width: 439px;
+  height: 282px;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.05);
+  border-radius: 2px;
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.landing-page-model h5 {
   font-size: 14px;
-  color: #2873FF;
+  color: rgba(0, 0, 0, 0.85);
   letter-spacing: 0;
+  margin-top: 24px;
+  margin-left: 24px;
+  margin-bottom: 33px;
 }
-.el-upload {
-   border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
+.landing-page-model div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 24px;
 }
- .avatar-uploader{
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    width: 178px;
-    height: 178px;
-    margin-bottom: 10px;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
-
+.landing-page-model div img {
+  width: 180px;
+  height: 147px;
+}
+.choose-plan-to-promote {
+  margin-top: 24px;
+}
 </style>
