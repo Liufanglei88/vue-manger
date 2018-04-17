@@ -1,11 +1,10 @@
 <template>
-    <div class="landing-page">
-        <!-- 落地页 -->
+    <div class="upload">
         <el-row>
-            <el-col class="landing-page-title">
+            <el-col class="upload-title">
                 <h1>广告创意</h1>
             </el-col>
-            <el-col class="landing-page-landing">
+            <el-col class="upload-landing">
                 <h5>落地页</h5>
             </el-col>
             <el-col>
@@ -20,8 +19,8 @@
                     </el-form-item>
                 </el-form>
             </el-col>
-             <el-col class="landing-page-landing">
-                <h5 style="margin:0">上传创意</h5>
+             <el-col class="upload-landing">
+                <h4 style="margin:0">上传创意</h4>
                 <a href="#" @click="show" v-if='landFile'>+添加创意</a>
                 <div v-else>
                   <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -52,15 +51,14 @@
                   </el-tabs>
                 </div>
             </el-col>
-            <el-col style="margin-top:80.7px;" class="landing-page-button">
-                 <el-button type="info" disabled>预定</el-button>
+            <el-col style="margin-top:80px;" class="upload-button">
+                 <el-button type="info">预定</el-button>
             </el-col>
            
-              <el-col v-if="showOrHide" class="landing-page-model" :span="10">
-                  <h5>选择创意</h5>
+              <el-col v-if="showORHide" class="upload-model" :span="10">
                   <div>
-                      <img src="../../../../static/images/1.png" alt="" @click="ClickImage">
-                      <img src="../../../../static/images/2.png" alt="" @click="ClickImage">
+                       <span @click="ClickImage">单图</span>
+                       <span @click="ClickImage">多图</span>
                   </div>
               </el-col>
 
@@ -70,13 +68,12 @@
 </template>
 
 <script>
-import $http from "../../../utils/request";
 export default {
-  name: "landingPage",
+  name: "creationCreativity",
   data() {
     return {
       address: "",
-      showOrHide: false,
+      showORHide: false,
       landFile: true,
       dialogImageUrl: "",
       dialogVisible: false,
@@ -84,18 +81,20 @@ export default {
     };
   },
   methods: {
+    handleClick(tab, event) {
+      console.log(tab, event);
+    },
     show() {
-      this.showOrHide = !this.showOrHide;
+      this.showORHide = !this.showORHide;
     },
     ClickImage() {
       this.landFile = !this.landFile;
-      this.showOrHide = !this.showOrHide;
+      this.showORHide = !this.showORHide;
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = "http://localhost:9000/" + res.data.value;
-      console.log(this)
       this.$message = {
-        message: '添加成功，但我不想显示',
+        message: '添加成功',
         type: 'success'
       }
     },
@@ -109,23 +108,20 @@ export default {
          this.$message.error("上传头像图片大小不能超过 2MB!");
        }
       return isJPG&& isLt2M;
-    },
-    handleClick(tab, event) {
-      console.log(tab, event);
     }
   }
 };
 </script>
 
 <style scoped>
-.landing-page-title h1 {
+.upload-title h1 {
   font-size: 34px;
   color: rgba(0, 0, 0, 0.85);
   letter-spacing: 0;
   margin-bottom: 32px;
   font-weight: normal;
 }
-.landing-page-landing h5 {
+.upload-landing h5 {
   font-size: 20px;
   color: rgba(0, 0, 0, 0.85);
   letter-spacing: 0;
@@ -138,16 +134,16 @@ export default {
 .el-input .el-input__inner {
   height: 100%;
 }
-.landing-page-button .el-button {
+.upload-button .el-button {
   width: 166px;
   height: 52px;
 }
-.landing-page-mark {
+.upload-mark {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.45);
 }
-.landing-page-model {
+.upload-model {
   width: 439px;
   height: 282px;
   background: #ffffff;
@@ -162,7 +158,7 @@ export default {
   right: 0;
   margin: auto;
 }
-.landing-page-model h5 {
+.upload-model h5 {
   font-size: 14px;
   color: rgba(0, 0, 0, 0.85);
   letter-spacing: 0;
@@ -170,14 +166,14 @@ export default {
   margin-left: 24px;
   margin-bottom: 33px;
 }
-.landing-page-model div {
+.upload-model div {
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
   padding: 0 24px;
 }
-.landing-page-model div img {
+.upload-model div img {
   width: 180px;
   height: 147px;
 }
